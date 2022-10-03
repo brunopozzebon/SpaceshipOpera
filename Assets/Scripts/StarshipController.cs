@@ -13,7 +13,7 @@ public class StarshipController : MonoBehaviour
     public Transform firstShootPosition, secondShootPosition, thirdShootPosition;
     public bool shootWithFirstCannon = true;
     public Material blueMaterial, redMaterial, yellowMaterial, whiteMaterial;
-    public GameObject shoot, bigShoot, leftTrail, rightTrail, lifebar, explosion;
+    public GameObject shoot, bigShoot, leftTrail, rightTrail, lifebar, explosion, forceField, healhParticles;
 
     private float forward1D, horizontal1D, pitch, glideForward = 0f, glideHorizontal = 0f;
     private float pitchForce = DEFAULT_PITCH_FORCE;
@@ -26,14 +26,23 @@ public class StarshipController : MonoBehaviour
     private LifeBarController lifeBarController;
     private ParticleSystem explosionParticlesSystem;
     private TrailRenderer leftTrailRenderer, rightTrailRenderer;
+    private ParticleSystem healthParticlesSystem;
+    private MeshRenderer forceFieldRenderer;
+
+    private CapsuleCollider capsuleCollider;
 
     void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
+        capsuleCollider = GetComponent<CapsuleCollider>();
         lifeBarController = lifebar.GetComponent<LifeBarController>();
         explosionParticlesSystem = explosion.GetComponent<ParticleSystem>();
         leftTrailRenderer = leftTrail.GetComponent<TrailRenderer>();
         rightTrailRenderer = rightTrail.GetComponent<TrailRenderer>();
+        forceFieldRenderer = forceField.GetComponent<MeshRenderer>();
+        forceFieldRenderer.enabled = false;
+        healthParticlesSystem = healhParticles.GetComponent<ParticleSystem>();
+        healthParticlesSystem.Stop();
     }
 
     void FixedUpdate()
@@ -101,38 +110,32 @@ public class StarshipController : MonoBehaviour
             shootWithFirstCannon = !shootWithFirstCannon;
         }
     }
-
-
-    public void onRoll(InputAction.CallbackContext context)
+    
+    public void receiveDamage(Vector3 colissionPoint, float damage)
     {
-        pitch = context.ReadValue<float>();
-    }
-
-    public void onUpDown(InputAction.CallbackContext context)
-    {
-        forward1D = context.ReadValue<float>();
-    }
-
-    public void onRightAndLeft(InputAction.CallbackContext context)
-    {
-        horizontal1D = context.ReadValue<float>();
-    }
-
-
-    public void receiveDamage(Vector3 colissionPoint)
-    {
-        shipLife -= 8f;
-        lifeBarController.updateLife(shipLife);
+        RickSpeakingScript.playAudioWhenShooted();
+        updateLife(-damage);
         explosion.transform.position = colissionPoint;
-
         explosionParticlesSystem.Play();
+    }
 
-        if (shipLife <= 0)
-            gameOver();
+    public void updateLife(float delta)
+    {
+        if (!(shipLife >= 100 && delta > 0))
+        {
+            shipLife += delta;
+            lifeBarController.updateLife(shipLife);
+        
+            if (shipLife <= 0)
+                gameOver();
+        }
     }
 
     public void gameOver()
     {
+        RickSpeakingScript.playAudioWhenDied();
+        capsuleCollider.height = 0f;
+        capsuleCollider.center = new Vector3(0, 4, 0);
     }
 
     public void changeSong(SongType songType)
@@ -142,6 +145,7 @@ public class StarshipController : MonoBehaviour
         sideForce = DEFAULT_SIDE_FORCE;
         shootVelocity = DEFAULT_SHOOT_VELOCITY;
         maxVelocity = DEFAULT_MAX_VELOCITY;
+        forceFieldRenderer.enabled = false;
 
         GameObject[] turbines = GameObject.FindGameObjectsWithTag("TurbineRay");
         switch (songType)
@@ -181,6 +185,8 @@ public class StarshipController : MonoBehaviour
                     turbine.GetComponent<MeshRenderer>().material = whiteMaterial;
                 }
 
+                forceFieldRenderer.enabled = true;
+                healthParticlesSystem.Play();
                 leftTrailRenderer.material = whiteMaterial;
                 rightTrailRenderer.material = whiteMaterial;
                 break;
@@ -194,5 +200,20 @@ public class StarshipController : MonoBehaviour
                 rightTrailRenderer.material = blueMaterial;
                 break;
         }
+    }
+    
+    public void onPitch(InputAction.CallbackContext context)
+    {
+        pitch = context.ReadValue<float>();
+    }
+
+    public void onForward(InputAction.CallbackContext context)
+    {
+        forward1D = context.ReadValue<float>();
+    }
+
+    public void onRightAndLeft(InputAction.CallbackContext context)
+    {
+        horizontal1D = context.ReadValue<float>();
     }
 }

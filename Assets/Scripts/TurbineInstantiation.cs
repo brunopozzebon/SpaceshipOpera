@@ -4,8 +4,8 @@ public class TurbineInstantiation : MonoBehaviour
 {
     public GameObject rayModel;
     public GameObject[] rays = new GameObject[SongController.SPECTRUM_SIZE];
-    public float turbineHeighScalar = 10;
-    public float radius = 0.40f;
+    public float turbineHeighScalar = 15;
+    public float radius = 0.5f;
     void Start()
     {
         float angleIncrement = (360f / SongController.SPECTRUM_SIZE)*2;

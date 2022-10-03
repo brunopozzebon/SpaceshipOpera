@@ -5,6 +5,8 @@ using UnityEngine;
 public class EnemyShootScript : MonoBehaviour
 {
 
+    private const float DAMAGE = 8f;
+
     private void Start()
     {
         StartCoroutine(SelfDestruct());
@@ -20,10 +22,10 @@ public class EnemyShootScript : MonoBehaviour
     private void OnTriggerEnter(Collider collider)
    {
        
-       if (collider.gameObject.CompareTag("Player"))
+       if (collider.gameObject.CompareTag("Player") && SongController.songType != SongType.CLASSIC)
        {
            StarshipController starshipController = collider.gameObject.GetComponent<StarshipController>();
-           starshipController.receiveDamage(gameObject.transform.position);
+           starshipController.receiveDamage(gameObject.transform.position, DAMAGE);
        }
        Destroy(gameObject);
    }

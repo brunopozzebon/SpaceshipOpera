@@ -4,11 +4,11 @@ using UnityEngine;
 public class EnemySpawnController : MonoBehaviour
 {
     private const float DEFAULT_SPAWN_TIME = 2f;
-    private const float MIN_SPAWN_TIME = 0.8f;
+    private const float MIN_SPAWN_TIME = 0.5f;
     private const float MAX_SPAWN_TIME = 6f;
     public const int MAX_ENEMYES = 40;
 
-    private float spawnTimeDecrement = 1.0f;
+    private float spawnTimeDecrement = 0.7f;
 
     public GameObject enemy;
     public Transform[] spots = new Transform[3];
@@ -53,10 +53,10 @@ public class EnemySpawnController : MonoBehaviour
                 StartCoroutine(portalGoAway(randomIndex));
                 StartCoroutine(createEnemy(enemy, spotPosition));
                 
-                float nextSpawnTime = 1/ (SongController.getSongIntensityMedia() * 14);
+                float nextSpawnTime = 1/ (SongController.getSongIntensityMedia() * 18);
                 nextSpawnTime -= spawnTimeDecrement;
                 spawnTimeDecrement += 0.02f;
-                
+
                 float spawnTimeSanitized =  Mathf.Clamp(nextSpawnTime, MIN_SPAWN_TIME, MAX_SPAWN_TIME);
                 
                 yield return new WaitForSeconds(float.IsNaN(spawnTimeSanitized)?DEFAULT_SPAWN_TIME:spawnTimeSanitized);

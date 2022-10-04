@@ -2,7 +2,6 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 public enum SongType
 {
     ROCK, ELETRONIC, DEFAULT, CLASSIC        
@@ -16,7 +15,7 @@ public class SongController : MonoBehaviour
     private const float HABILITY_TIME_DECREASE=1.0f;
     
     public float habilityBoostTime = 10f;
-    public AudioSource audioChosen;
+    public static AudioSource audioChosen;
     public AudioSource musicDefault;
     public AudioSource musicRock;
     public AudioSource musicClassic;
@@ -34,36 +33,43 @@ public class SongController : MonoBehaviour
     {
         audioChosen = musicDefault;
         audioChosen.Play();
-       
-
+        audioChosen.volume = 0.5f;
         starshipController = GameObject.FindWithTag("Player").GetComponent<StarshipController>();
     }
 
     private void Update()
     {
-        if (songType == SongType.DEFAULT)
+        if (!GameOver.gameIsOver && audioChosen.isPlaying)
         {
-            if (Input.GetKeyDown(KeyCode.Keypad1))
+            if (songType == SongType.DEFAULT)
             {
-                changeSong(musicRock, SongType.ROCK, coverTextures[0]);
-                StartCoroutine(returnToDefault());
-            }else if (Input.GetKeyDown(KeyCode.Keypad2))
-            {
-                changeSong(musicEletronic, SongType.ELETRONIC, coverTextures[1]);
-                StartCoroutine(returnToDefault());
-            }else if (Input.GetKeyDown(KeyCode.Keypad3))
-            {
-                changeSong(musicClassic, SongType.CLASSIC, coverTextures[2]);
-                canCure = true;
-                StartCoroutine(health());
-                StartCoroutine(returnToDefault());
+                if (Input.GetKeyDown(KeyCode.Keypad1))
+                {
+                    changeSong(musicRock, SongType.ROCK, coverTextures[0]);
+                    StartCoroutine(returnToDefault());
+                }else if (Input.GetKeyDown(KeyCode.Keypad2))
+                {
+                    changeSong(musicEletronic, SongType.ELETRONIC, coverTextures[1]);
+                    StartCoroutine(returnToDefault());
+                }else if (Input.GetKeyDown(KeyCode.Keypad3))
+                {
+                    changeSong(musicClassic, SongType.CLASSIC, coverTextures[2]);
+                    canCure = true;
+                    StartCoroutine(health());
+                    StartCoroutine(returnToDefault());
+                }
             }
-        }
 
-        audioChosen.GetSpectrumData(spectrum, 0, FFTWindow.Blackman);
-        updateSpectrumItensity();
+            audioChosen.GetSpectrumData(spectrum, 0, FFTWindow.Blackman);
+            updateSpectrumItensity();
+        }
     }
 
+    public static void shutDownSong()
+    {
+        audioChosen.Pause();
+    }
+    
     static void updateSpectrumItensity()
     {
         
@@ -101,7 +107,6 @@ public class SongController : MonoBehaviour
             starshipController.updateLife(1f);
             yield return new WaitForSeconds(1f);
         }
-      
     }
 
     IEnumerator returnToDefault()
@@ -124,6 +129,7 @@ public class SongController : MonoBehaviour
         audioChosen = audioSource;
         SongController.songType = songType;
         audioChosen.Play();
+        audioChosen.volume = 0.5f;
         coverImage.texture =coverTexture;
         starshipController.changeSong(songType);
     }

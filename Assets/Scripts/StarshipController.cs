@@ -1,9 +1,10 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class StarshipController : MonoBehaviour
 {
-    const float DEFAULT_PITCH_FORCE = 100f;
+    const float DEFAULT_PITCH_FORCE = 70f;
     const float DEFAULT_FORWARD_FORCE = 2000f;
     const float DEFAULT_SIDE_FORCE = 1000f;
     const float DEFAULT_SHOOT_VELOCITY = 12000f;
@@ -13,8 +14,16 @@ public class StarshipController : MonoBehaviour
     public Transform firstShootPosition, secondShootPosition, thirdShootPosition;
     public bool shootWithFirstCannon = true;
     public Material blueMaterial, redMaterial, yellowMaterial, whiteMaterial;
-    public GameObject shoot, bigShoot, leftTrail, rightTrail, lifebar, explosion, forceField, healhParticles;
 
+    public GameObject shoot,
+        bigShoot,
+        leftTrail,
+        rightTrail,
+        lifebar,
+        explosion,
+        forceField,
+        healhParticles,
+        gameOverScreen;
     private float forward1D, horizontal1D, pitch, glideForward = 0f, glideHorizontal = 0f;
     private float pitchForce = DEFAULT_PITCH_FORCE;
     private float forwardForce = DEFAULT_FORWARD_FORCE;
@@ -136,6 +145,17 @@ public class StarshipController : MonoBehaviour
         RickSpeakingScript.playAudioWhenDied();
         capsuleCollider.height = 0f;
         capsuleCollider.center = new Vector3(0, 4, 0);
+        GameOver.gameIsOver = true;
+        SongController.shutDownSong();
+        StartCoroutine(gameOverAnimation());
+    }
+    
+    IEnumerator gameOverAnimation()
+    {
+        yield return new WaitForSeconds(1f);
+        CarExplosion.explode();
+        yield return new WaitForSeconds(2f);
+        gameOverScreen.SetActive(true);
     }
 
     public void changeSong(SongType songType)

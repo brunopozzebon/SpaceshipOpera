@@ -34,7 +34,7 @@ public class EnemyController : MonoBehaviour
 
     IEnumerator shoot()
     {
-        while (!isDeath)
+        while (!isDeath && !GameOver.gameIsOver)
         {
             if (
                 Vector3.Distance( playerPosition.transform.position, transform.position)< minShootingDistance)

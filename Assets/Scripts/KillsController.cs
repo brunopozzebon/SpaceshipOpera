@@ -4,6 +4,7 @@ using TMPro;
 public class KillsController : MonoBehaviour
 {
     public GameObject textObject;
+    public GameObject victoryScreen;
     private TextMeshProUGUI text;
     
     private RectTransform rectTransform;
@@ -11,7 +12,7 @@ public class KillsController : MonoBehaviour
     private float originalXPosition;
 
     public static int kills = 0;
-    public static int KILLS_TO_WIN = 20;
+    public static int KILLS_TO_WIN = 100;
     private void Start()
     {
         text = textObject.GetComponent<TextMeshProUGUI>();
@@ -33,9 +34,12 @@ public class KillsController : MonoBehaviour
         
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
         
-        if (kills > KILLS_TO_WIN && enemies.Length <= 1)
+        if (kills >= KILLS_TO_WIN && enemies.Length <= 1)
         {
-            Debug.Log("WIN");
+            RickSpeakingScript.playAudioWhenKill();
+            GameOver.gameIsOver = true;
+            SongController.shutDownSong();
+            victoryScreen.SetActive(true);
         }
     }
 }

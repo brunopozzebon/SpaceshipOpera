@@ -35,7 +35,7 @@ public class ShootScript : MonoBehaviour
             rigidbody.velocity = new Vector3(0, 0, 0);
             meshRenderer.enabled = false;
 
-            if (transform.childCount > 1)
+            if (transform.childCount >= 1)
             {
                 ParticleSystem particles = transform.GetChild(0).GetComponent <ParticleSystem>();
                 particles.transform.position = collider.transform.position;

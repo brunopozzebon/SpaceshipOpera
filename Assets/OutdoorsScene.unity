@@ -15269,7 +15269,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  turbineHeighScalar: 25
+  turbineHeighScalar: 60
   radius: 0.5
 --- !u!1 &1030983240
 GameObject:
@@ -40978,7 +40978,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 1
   prewarm: 0
-  playOnAwake: 0
+  playOnAwake: 1
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -53055,7 +53055,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  turbineHeighScalar: 25
+  turbineHeighScalar: 60
   radius: 0.5
 --- !u!1 &1933015568
 GameObject:

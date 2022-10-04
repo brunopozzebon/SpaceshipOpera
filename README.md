@@ -1,7 +1,8 @@
 ## Trabalho 2 do Grau A - SpaceshipOpera
 ### Aluno Bruno Pozzebon
 Que tal embarcar em uma aventura cósmica com Rick Sanches completamente desgovernado em um planeta hostil e repleto de inimigos. SpaceshipOpera é um game na qual você controla um cientista maluco pilotando uma nave mortal, repleta de armas, poderes, e sobretudo um rádio muito estranho capaz de dar poderes incríveis ao protagonista.
-![alt text](cover.png)
+
+![Capa do Jogo](cover.PNG)
 
 ## Requisitos para importação do projeto
 * Unity
